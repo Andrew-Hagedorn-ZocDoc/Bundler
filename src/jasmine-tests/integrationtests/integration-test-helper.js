@@ -69,11 +69,30 @@ TestUtility.prototype.Wait = function (duration) {
   );
 };
 
+var cleanDirectory = function(fs, dir) {
+
+	var files = fs.readdirSync(dir);
+	
+	files.forEach(function(directoryItem) {
+	
+		var fullPath = dir + '/' + directoryItem;
+		var stats = fs.statSync(fullPath);
+		if(stats.isDirectory()) {
+			cleanDirectory(fs, fullPath);
+		}
+		else {
+			fs.unlinkSync(fullPath);
+		}
+	});
+	
+	fs.rmdirSync(dir);
+}
+
 TestUtility.prototype.CleanDirectory = function (dir) {
     var _this = this;
     _this.runFunc(function () {
         if (_this.FileSystem.existsSync(dir)) {
-            _this.RunCommandSync("rm -rf ./" + dir);
+			cleanDirectory(_this.FileSystem, dir);
         }
     });
 }
