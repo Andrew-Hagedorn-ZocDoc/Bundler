@@ -64,7 +64,7 @@ function BundleImageRewriter(
         return outputRoot + 'version__' + hash + seperator + cleanedUrl;
     }
 
-    this.imageUrlRegex = new RegExp(/url\(.*?g['"]?\)/ig)
+    this.imageUrlRegex = new RegExp(/url\(.*?[gf]['"]?\)/ig)
 }
 
 exports.BundleImageRewriter = BundleImageRewriter;
