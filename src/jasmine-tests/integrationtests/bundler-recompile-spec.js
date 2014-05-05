@@ -155,9 +155,8 @@ describe("Recompile Tests - ", function() {
     };
 
     var updateFile = function (dir, fileName, contents) {
-        testUtility.CreateFile(dir, fileName, contents);
         testUtility.Wait(1000);
-        testUtility.RunCommandSync("touch " + dir + "/" + fileName);
+        testUtility.CreateFile(dir, fileName, contents);
     };
 
     var givenImport = function (fileName, contents) {
