@@ -35,10 +35,6 @@ describe("Css Bundling:", function() {
       runTestCase("image-versioning-css", null, false, " -rewriteimagefileroot:test-cases/image-versioning-css -rewriteimageoutputroot:combined");
   });
 
-  it("Compiles and Concatenates .less files with css files", function() {
-      runTestCase("combines-less-and-css");
-  });
-
   it("Folder option by default minifies, but does not bundle."
     , function() {
         var testCase = getTestCase("default-folder-option-css");
