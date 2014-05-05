@@ -31,10 +31,6 @@ describe("Css Bundling:", function() {
         testCase.RunBundlerAndVerifyOutput();
     };
 
-  it("Concatenates individual css files in a .bundle file into a single minified bundle.", function() {
-         runTestCase("combines-individual-css-files");
-  });  
-
   it("Compiles and Concatenates .less files", function() {
       runTestCase("combines-less");
   });
