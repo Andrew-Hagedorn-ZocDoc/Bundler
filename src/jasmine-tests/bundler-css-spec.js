@@ -31,10 +31,6 @@ describe("Css Bundling:", function() {
         testCase.RunBundlerAndVerifyOutput();
     };
 
-  it("Compiles and Concatenates .less files", function() {
-      runTestCase("combines-less");
-  });
-
   it("Optionally versions images in the minified file", function () {
       runTestCase("image-versioning-css", null, false, " -rewriteimagefileroot:test-cases/image-versioning-css -rewriteimageoutputroot:combined");
   });

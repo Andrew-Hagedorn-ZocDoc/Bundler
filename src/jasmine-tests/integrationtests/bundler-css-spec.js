@@ -34,6 +34,18 @@ describe("Css Bundling:", function() {
 
 	});  
 
+	it("Compiles and Concatenates .less files", function () {
+
+	    givenFileToBundle('less1.less', '@color: red;\n.less1 { color: @color; }');
+	    givenFileNotInBundle('less2.less', '@color: red;\n.less2 { color: @color; }');
+	    givenFileToBundle('less3.less', '@color: red;\n.less3 { color: @color; }');
+
+	    bundle();
+
+	    verifyBundleIs(".less1{color:red}\n"
+                      + ".less3{color:red}\n");
+	});
+
 	var verifyBundleIs = function (expectedContents) {
 		testUtility.VerifyFileContents(testDir, "test.min.css", expectedContents);
 	};
