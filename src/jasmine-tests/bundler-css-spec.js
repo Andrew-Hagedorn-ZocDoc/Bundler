@@ -35,15 +35,6 @@ describe("Css Bundling:", function() {
       runTestCase("image-versioning-css", null, false, " -rewriteimagefileroot:test-cases/image-versioning-css -rewriteimageoutputroot:combined");
   });
 
-  it("An error is thrown for invalid less.", function () {
-      var testCase = getTestCase("invalid-less");
-      testCase.VerifyBundle = function () {
-          var hasError = testCase.StdError.indexOf("missing closing `}`") >= 0;
-          expect(hasError).toBe(true);
-      };
-      testCase.RunBundlerAndVerifyOutput();
-  });
-
   it("Compiles and Concatenates .less files with css files", function() {
       runTestCase("combines-less-and-css");
   });

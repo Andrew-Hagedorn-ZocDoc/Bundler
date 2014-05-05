@@ -12,6 +12,7 @@ function TestUtility(
     this.runFunc = runs;
     this.waitFunc = waitsFor;
     this.FileSystem = fs;
+    this.Error = '';
 };
 
 exports.TestUtility = TestUtility;
@@ -31,7 +32,10 @@ TestUtility.prototype.RunCommandSync = function (cmd, execCallback) {
                 (execCallback || function () { })(error, stdout, stderr);
 
                 if (stdout) { _this.Console.log("stdOut: (" + stdout + ")"); }
-                if (stderr) { _this.Console.log("stdErr: (" + stderr + ")"); }
+                if (stderr) {
+                    _this.Console.log("stdErr: (" + stderr + ")");
+                    _this.Error = stderr;
+                }
                 if (error) { _this.Console.log("stdErr: (" + error + ")"); }
 
                 finishedCommand = true;
@@ -139,4 +143,10 @@ TestUtility.prototype.Bundle = function (dir, options) {
     });
 }
 
-
+TestUtility.prototype.VerifyErrorIs = function (dir, fileName) {
+    var _this = this;
+    _this.runFunc(function () {
+        var hasError = _this.Error.indexOf("missing closing") >= 0;
+        expect(hasError).toBe(true);
+    });
+}

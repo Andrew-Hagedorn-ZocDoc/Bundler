@@ -21,6 +21,14 @@ describe("Css Bundling:", function() {
         testUtility.CleanDirectory(testDirBase);
     });
 	
+    it("An error is thrown for invalid less.", function () {
+        givenFileToBundle('less1.less', '@color: red;\n.less1 { color: @color; ');
+
+        bundle();
+
+        testUtility.VerifyErrorIs("missing closing `}`");
+    });
+
 	it("Concatenates individual css files in a .bundle file into a single minified bundle.", function() {
 
 	    givenFileToBundle('file1.css', '.file1 { color: red; }');
@@ -63,5 +71,4 @@ describe("Css Bundling:", function() {
 	var givenFileNotInBundle = function (fileName, contents) {
 	    testUtility.CreateFile(testDir, fileName, contents);
 	};
-  
 });
