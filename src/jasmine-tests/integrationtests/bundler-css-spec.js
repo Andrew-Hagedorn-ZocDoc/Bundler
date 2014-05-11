@@ -6,12 +6,14 @@ describe("Css Bundling:", function() {
         testHelper = require('./integration-test-helper.js'),
         testUtility = new testHelper.TestUtility(exec, fs, runs, waitsFor),
         bundleContents,
+        bundleOptions,
         testDirBase = 'css-test-suite',
 		testDir = testDirBase + '/test';
 
 	beforeEach(function () {
 
-	    //testUtility.CleanDirectory(testDirBase);
+	    testUtility.CleanDirectory(testDirBase);
+	    bundleOptions = "";
         bundleContents = "";
         testUtility.CreateDirectory(testDirBase);
         testUtility.CreateDirectory(testDir);
@@ -21,7 +23,7 @@ describe("Css Bundling:", function() {
         testUtility.CleanDirectory(testDirBase);
     });
 	
-    it("An error is thrown for invalid less.", function () {
+    it("Given an invalid less file, bundling fails and an error is thrown.", function () {
         givenFileToBundle('less1.less', '@color: red;\n.less1 { color: @color; ');
 
         bundle();
@@ -29,7 +31,7 @@ describe("Css Bundling:", function() {
         testUtility.VerifyErrorIs("missing closing `}`");
     });
 
-	it("Concatenates individual css files in a .bundle file into a single minified bundle.", function() {
+	it("Given css files, they are concatenated into the output bundle.", function() {
 
 	    givenFileToBundle('file1.css', '.file1 { color: red; }');
 	    givenFileToBundle('file2.css', '.file2 { color: red; }');
@@ -42,7 +44,7 @@ describe("Css Bundling:", function() {
 
 	});  
 
-	it("Compiles and Concatenates .less files", function () {
+	it("Given Less files, they are compiled and concatenated into the output bundle.", function () {
 
 	    givenFileToBundle('less1.less', '@color: red;\n.less1 { color: @color; }');
 	    givenFileNotInBundle('less2.less', '@color: red;\n.less2 { color: @color; }');
@@ -54,7 +56,7 @@ describe("Css Bundling:", function() {
                       + ".less3{color:red}\n");
 	});
 
-	it("Compiles and Concatenates .less files with css files", function () {
+	it("Given Css and Less files together, it compiles and concatenates everything into the output bundle.", function () {
 	    
 	    givenFileToBundle('file1.css', '.file1 { color: red; }');
 	    givenFileToBundle('file2.css', '.file2 { color: red; }');
@@ -71,14 +73,46 @@ describe("Css Bundling:", function() {
                       + ".less3{color:red}\n");
 	});
 
+	it("Given rewrite image option, versions image urls with a hash of the image contents if the image exists on disk.", function () {
+
+	    givenImages('an-image-there.jpg');
+
+	    givenBundleOption("-rewriteimagefileroot:test-cases/image-versioning-css -rewriteimageoutputroot:combined");
+
+
+	    givenFileToBundle('file1.css', '.file1 { color: red; }\n'
+                                     + '.aa { background: url("img/an-image-there.jpg") center no-repeat; }\n'
+                                     + '.bb { background: url("img/an-image-not-there.jpg") center no-repeat; }\n');
+	    givenFileToBundle('less1.less', '@color: red;\n'
+                                     + '.a { background: url(\'an-image-there.jpg\') center no-repeat; }\n'
+                                     + '.b { background: url("an-image-not-there.jpg") center no-repeat; }\n');
+
+	    bundle();
+
+	    verifyBundleIs(".file1{color:red}.aa{background:url('combined/version__df372d3dd54b5c8e8be770497461c5ab__/img/an-image-there.jpg') center no-repeat}.bb{background:url('img/an-image-not-there.jpg') center no-repeat}\n"
+                      + ".a{background:url('combined/version__bc1c317cd7706a0c0ad72db36f5fbdb4__/an-image-there.jpg') center no-repeat}.b{background:url('an-image-not-there.jpg') center no-repeat}\n");
+	});
+
 	var verifyBundleIs = function (expectedContents) {
 		testUtility.VerifyFileContents(testDir, "test.min.css", expectedContents);
 	};
 
 	var bundle = function () {
 		testUtility.CreateFile(testDir, "test.css.bundle", bundleContents);
-		testUtility.Bundle(testDir, " -outputbundlestats:true -outputdirectory:./" + testDir);
+		testUtility.Bundle(testDir, bundleOptions + " -outputbundlestats:true -outputdirectory:./" + testDir);
 	};
+
+	var givenBundleOption = function (option) {
+	    bundleOptions += " " + option;
+	}
+
+	var givenImages = function (imgFile) {
+	    var imgDir = testDir + "/img";
+	    testUtility.CreateDirectory(imgDir);
+
+	    testUtility.CreateFile(imgDir, imgFile, 'image contents');
+	    testUtility.CreateFile(testDir, imgFile, 'image contents');
+	}
 
 	var givenFileToBundle = function (fileName, contents) {
 	    givenFileNotInBundle(fileName, contents);

@@ -31,10 +31,6 @@ describe("Css Bundling:", function() {
         testCase.RunBundlerAndVerifyOutput();
     };
 
-  it("Optionally versions images in the minified file", function () {
-      runTestCase("image-versioning-css", null, false, " -rewriteimagefileroot:test-cases/image-versioning-css -rewriteimageoutputroot:combined");
-  });
-
   it("Folder option by default minifies, but does not bundle."
     , function() {
         var testCase = getTestCase("default-folder-option-css");
