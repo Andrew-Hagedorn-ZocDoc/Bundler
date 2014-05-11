@@ -150,3 +150,11 @@ TestUtility.prototype.VerifyErrorIs = function (dir, fileName) {
         expect(hasError).toBe(true);
     });
 }
+
+TestUtility.prototype.VerifyFileDoesNotExist = function (dir, file) {
+    var _this = this;
+    _this.runFunc(function () {
+        var exists = _this.FileSystem.existsSync(dir + "/" + file);
+        expect(exists).toBe(false);
+    });
+}

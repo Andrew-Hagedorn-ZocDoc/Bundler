@@ -77,7 +77,7 @@ describe("Css Bundling:", function() {
 
 	    givenImages('an-image-there.jpg');
 
-	    givenBundleOption("-rewriteimagefileroot:test-cases/image-versioning-css -rewriteimageoutputroot:combined");
+	    givenBundleOption("-rewriteimagefileroot:" + testDir + " -rewriteimageoutputroot:combined");
 
 
 	    givenFileToBundle('file1.css', '.file1 { color: red; }\n'
@@ -89,16 +89,41 @@ describe("Css Bundling:", function() {
 
 	    bundle();
 
-	    verifyBundleIs(".file1{color:red}.aa{background:url('combined/version__df372d3dd54b5c8e8be770497461c5ab__/img/an-image-there.jpg') center no-repeat}.bb{background:url('img/an-image-not-there.jpg') center no-repeat}\n"
-                      + ".a{background:url('combined/version__bc1c317cd7706a0c0ad72db36f5fbdb4__/an-image-there.jpg') center no-repeat}.b{background:url('an-image-not-there.jpg') center no-repeat}\n");
+	    verifyBundleIs(".file1{color:red}.aa{background:url('combined/version__d30407c38e441f3cb94732074bdfd05f__/img/an-image-there.jpg') center no-repeat}.bb{background:url('img/an-image-not-there.jpg') center no-repeat}\n"
+                      + ".a{background:url('combined/version__d30407c38e441f3cb94732074bdfd05f__/an-image-there.jpg') center no-repeat}.b{background:url('an-image-not-there.jpg') center no-repeat}\n");
 	});
 
+	it("Given folder option, minifies all files in folder, but does not concatenate into a bundle."
+    , function () {
+
+        givenBundleOption("-folder");
+
+        givenFileToBundle('file1.css', '.file1 { color: red; }');
+        givenFileToBundle('file2.css', '.file2 { color: red; }');
+        givenFileToBundle('file3.css', '.file3 { color: red; }');
+
+        bundle();
+
+        verifyFileAndContentsAre(testDir, 'file1.min.css', '.file1{color:red}');
+        verifyFileAndContentsAre(testDir, 'file2.min.css', '.file2{color:red}');
+        verifyFileAndContentsAre(testDir, 'file3.min.css', '.file3{color:red}');
+        verifyFileDoesNotExist(testDir, 'test.min.css');
+    });
+
+	var verifyFileAndContentsAre = function (directory, file, expectedContents) {
+	    testUtility.VerifyFileContents(directory, file, expectedContents);
+	};
+
+	var verifyFileDoesNotExist = function (directory, file) {
+	    testUtility.VerifyFileDoesNotExist(directory, file);
+	}
+
 	var verifyBundleIs = function (expectedContents) {
-		testUtility.VerifyFileContents(testDir, "test.min.css", expectedContents);
+	    verifyFileAndContentsAre(testDir, "test.min.css", expectedContents);
 	};
 
 	var bundle = function () {
-		testUtility.CreateFile(testDir, "test.css.bundle", bundleContents);
+	    testUtility.CreateFile(testDir, "test.css.bundle", bundleContents);
 		testUtility.Bundle(testDir, bundleOptions + " -outputbundlestats:true -outputdirectory:./" + testDir);
 	};
 

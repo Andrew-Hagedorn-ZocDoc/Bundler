@@ -30,13 +30,6 @@ describe("Css Bundling:", function() {
 
         testCase.RunBundlerAndVerifyOutput();
     };
-
-  it("Folder option by default minifies, but does not bundle."
-    , function() {
-        var testCase = getTestCase("default-folder-option-css");
-        testCase.SetUpCacheFileTest(false);
-        testCase.RunBundlerAndVerifyOutput();
-  });
  
   it("The recursive option on a folder searches sub-directories", function () {
       runTestCase("recursive-folder-css");
