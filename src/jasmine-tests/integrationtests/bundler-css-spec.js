@@ -23,7 +23,7 @@ describe("Css Bundling:", function() {
         testUtility.CleanDirectory(testDirBase);
     });
 	
-    it("Given an invalid less file, bundling fails and an error is thrown.", function () {
+    it("Given an invalid less file, then bundling fails and an error is thrown.", function () {
         givenFileToBundle('less1.less', '@color: red;\n.less1 { color: @color; ');
 
         bundle();
@@ -31,7 +31,7 @@ describe("Css Bundling:", function() {
         testUtility.VerifyErrorIs("missing closing `}`");
     });
 
-	it("Given css files, they are concatenated into the output bundle.", function() {
+	it("Given css files, then they are concatenated into the output bundle.", function() {
 
 	    givenFileToBundle('file1.css', '.file1 { color: red; }');
 	    givenFileToBundle('file2.css', '.file2 { color: red; }');
@@ -44,7 +44,7 @@ describe("Css Bundling:", function() {
 
 	});  
 
-	it("Given Less files, they are compiled and concatenated into the output bundle.", function () {
+	it("Given Less files, then they are compiled and concatenated into the output bundle.", function () {
 
 	    givenFileToBundle('less1.less', '@color: red;\n.less1 { color: @color; }');
 	    givenFileNotInBundle('less2.less', '@color: red;\n.less2 { color: @color; }');
@@ -56,7 +56,7 @@ describe("Css Bundling:", function() {
                       + ".less3{color:red}\n");
 	});
 
-	it("Given Css and Less files together, it compiles and concatenates everything into the output bundle.", function () {
+	it("Given Css and Less files together, then it compiles and concatenates everything into the output bundle.", function () {
 	    
 	    givenFileToBundle('file1.css', '.file1 { color: red; }');
 	    givenFileToBundle('file2.css', '.file2 { color: red; }');
@@ -73,7 +73,7 @@ describe("Css Bundling:", function() {
                       + ".less3{color:red}\n");
 	});
 
-	it("Given rewrite image option, versions image urls with a hash of the image contents if the image exists on disk.", function () {
+	it("Given rewrite image option, then it versions image urls with a hash of the image contents if the image exists on disk.", function () {
 
 	    givenImages('an-image-there.jpg');
 
@@ -93,14 +93,14 @@ describe("Css Bundling:", function() {
                       + ".a{background:url('combined/version__d30407c38e441f3cb94732074bdfd05f__/an-image-there.jpg') center no-repeat}.b{background:url('an-image-not-there.jpg') center no-repeat}\n");
 	});
 
-	it("Given folder option, minifies all files in folder, but does not concatenate into a bundle."
+	it("Given folder option, then it minifies all files in the top level folder, but does not concatenate into a bundle."
     , function () {
 
         givenBundleOption("-folder");
 
-        givenFileToBundle('file1.css', '.file1 { color: red; }');
-        givenFileToBundle('file2.css', '.file2 { color: red; }');
-        givenFileToBundle('file3.css', '.file3 { color: red; }');
+        givenFileNotInBundle('file1.css', '.file1 { color: red; }');
+        givenFileNotInBundle('file2.css', '.file2 { color: red; }');
+        givenFileNotInBundle('file3.css', '.file3 { color: red; }');
 
         bundle();
 
@@ -110,13 +110,72 @@ describe("Css Bundling:", function() {
         verifyFileDoesNotExist(testDir, 'test.min.css');
     });
 
+	it("Given folder and force bundle option, then it minifies all files in the top level folder and concatenates them into a bundle."
+    , function () {
+
+        givenBundleOption("-folder -forcebundle");
+
+        givenFileNotInBundle('file1.css', '.file1 { color: red; }');
+        givenFileNotInBundle('file2.css', '.file2 { color: red; }');
+        givenFileNotInBundle('file3.css', '.file3 { color: red; }');
+
+        bundle();
+
+        verifyBundleIs('.file1{color:red}\n'
+                     + '.file2{color:red}\n'
+                     + '.file3{color:red}\n');
+    });
+
+	it("Given a sub directory, then by default the sub-directory is not included with the folder option.", function () {
+
+	    var subDirectory = "sub_dir";
+	    givenBundleOption("-folder -forcebundle");
+	    givenSubDirectory(subDirectory);
+
+	    givenFileNotInBundle('file1.css', '.file1 { color: red; }');
+	    givenFileNotInBundleInSubDirectory(subDirectory, 'file2.css', '.file2 { color: red; }');
+	    givenFileNotInBundleInSubDirectory(subDirectory, 'less1.less', '@color: red;\n.less1 { color: @color; }');
+
+	    bundle();
+
+	    verifyBundleIs('.file1{color:red}\n');
+	});
+
+	it("Given the recursive option, then files in sub-directories are included in the bundle.", function () {
+	    
+	    var subDirectory = "sub_dir";
+	    givenBundleOption("-folder:recursive -forcebundle");
+	    givenSubDirectory(subDirectory);
+
+	    givenFileNotInBundle('file1.css', '.file1 { color: red; }');
+	    givenFileNotInBundleInSubDirectory(subDirectory, 'file2.css', '.file2 { color: red; }');
+	    givenFileNotInBundleInSubDirectory(subDirectory, 'less1.less', '@color: red;\n.less1 { color: @color; }');
+
+	    bundle();
+
+	    verifyBundleIs('.file1{color:red}\n'
+                     + '.file2{color:red}\n'
+                     + '.less1{color:red}\n');
+
+	});
+    
+	var givenFileNotInBundleInSubDirectory = function (subDirectory, file, contents) {
+	    var fullDir = testDir + "/" + subDirectory;
+	    testUtility.CreateFile(fullDir, file, contents);
+	};
+
+	var givenSubDirectory = function (directory) {
+	    var subDir = testDir + "/" + directory;
+	    testUtility.CreateDirectory(subDir);
+	};
+
 	var verifyFileAndContentsAre = function (directory, file, expectedContents) {
 	    testUtility.VerifyFileContents(directory, file, expectedContents);
 	};
 
 	var verifyFileDoesNotExist = function (directory, file) {
 	    testUtility.VerifyFileDoesNotExist(directory, file);
-	}
+	};
 
 	var verifyBundleIs = function (expectedContents) {
 	    verifyFileAndContentsAre(testDir, "test.min.css", expectedContents);
@@ -129,7 +188,7 @@ describe("Css Bundling:", function() {
 
 	var givenBundleOption = function (option) {
 	    bundleOptions += " " + option;
-	}
+	};
 
 	var givenImages = function (imgFile) {
 	    var imgDir = testDir + "/img";
@@ -137,7 +196,7 @@ describe("Css Bundling:", function() {
 
 	    testUtility.CreateFile(imgDir, imgFile, 'image contents');
 	    testUtility.CreateFile(testDir, imgFile, 'image contents');
-	}
+	};
 
 	var givenFileToBundle = function (fileName, contents) {
 	    givenFileNotInBundle(fileName, contents);
