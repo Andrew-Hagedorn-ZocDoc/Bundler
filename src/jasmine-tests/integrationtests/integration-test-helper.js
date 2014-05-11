@@ -47,7 +47,7 @@ TestUtility.prototype.RunCommandSync = function (cmd, execCallback) {
         return finishedCommand;
      }, 
      "Running command did not complete", 
-     750
+     10000
   );
 };
 
@@ -69,7 +69,7 @@ TestUtility.prototype.Wait = function (duration) {
         return doneWaiting;
     },
      "Waited longer than 5 seconds.",
-     5000
+     10000
   );
 };
 

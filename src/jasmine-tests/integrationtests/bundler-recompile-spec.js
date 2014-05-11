@@ -15,6 +15,7 @@ describe("Recompile Tests - ", function() {
     beforeEach(function () {
 
         bundleContents = "";
+		testUtility.CleanDirectory(testDirBase);
         testUtility.CreateDirectory(testDirBase);
         testUtility.CreateDirectory(testDir);
         testUtility.CreateDirectory(importDirectory);
