@@ -72,7 +72,7 @@ BundlerTestCase.prototype.RunBundlerAndVerifyOutput = function() {
         return _this.FinishedBundlerRun;
      }, 
      "Bundler did not complete", 
-     750);
+     10000);
 
   _this.runFunc(function() {	  
     _this.VerifyBundle();
@@ -83,7 +83,7 @@ BundlerTestCase.prototype.RunBundlerAndVerifyOutput = function() {
         return _this.FinishedVerify;
       }, 
       "Verify did not complete", 
-      750);
+      10000);
 
    _this.CleanDirectory();
 };
@@ -353,7 +353,7 @@ BundlerTestCase.prototype.CleanDirectory = function() {
           return finished;
       }, 
       "Clean did not complete", 
-      750);
+      10000);
 
   _this.runFunc(function () { _this.Console.log("Clean Complete"); });
 };
