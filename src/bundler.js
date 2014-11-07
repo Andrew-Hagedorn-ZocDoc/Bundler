@@ -27,8 +27,7 @@ SOFTWARE.
 // windows build systems
 
 process.on("uncaughtException", function (err) {
-    console.log("ERROR")
-    console.error(err);
+    console.error(JSON.stringify(err));
     process.exit(1);
 });
 
@@ -128,8 +127,6 @@ var scanIndex = 0;
         if(bundlerOptions.DefaultOptions.outputbundlestats) {
             bundleStatsCollector.SaveStatsToDisk(bundlerOptions.DefaultOptions.outputdirectory ||  process.cwd());
         }
-
-        console.log("Bundling took: " + (Date.now() - startedAt) + "ms");
     }
 })();
 
@@ -500,6 +497,11 @@ function getOrCreateJsMustache(options, mustacheText, mPath, jsPath, cb /*cb(js)
 
 	compileAsync(options, "compiling", function (mustacheText, mPath, cb) {
             var templateName = path.basename(mPath, path.extname(mPath)); 
+            if (options.usetemplatedirs){
+                var splitPath = mPath.replace(".mustache", "").split(path.sep);
+                var templateIndex = splitPath.indexOf("templates");
+                templateName = splitPath.slice(templateIndex + 1).join("-");
+            }
             var templateObject = "{ code: " + hogan.compile(mustacheText, { asString: true })
                             + ", partials: {}, subs: {} }";
             var compiledTemplate = "window[\"JST\"] = window[\"JST\"] || {};"
@@ -575,21 +577,11 @@ function compileAsync(options, mode, compileFn /*compileFn(text, textPath, cb(co
                 fs.stat(textPath, function (_, textStat) {
                     fs.stat(compileTextPath, function (_, minTextStat) {
 
-                        var shouldCompile = minTextStat.mtime.getTime() < textStat.mtime.getTime();
+						var lastUpdated = minTextStat.mtime.getTime();
+                        var shouldCompile = lastUpdated < textStat.mtime.getTime();
 
                         if(bundlerOptions.DefaultOptions.outputbundlestats && !shouldCompile) {
-                            var imports = bundleStatsCollector.GetImportsForFile(textPath) || [];
-
-                            for(var i=0; i < imports.length; i++) {
-                                
-                                var importStat = fs.statSync(imports[i]);
-
-                                shouldCompile = minTextStat.mtime.getTime() < importStat.mtime.getTime();
-
-                                if(shouldCompile) {
-                                    break;
-                                }
-                            }
+                            shouldCompile = bundleStatsCollector.ChangeExistsInImportedFile(textPath, lastUpdated);
                         };
 
                         next(shouldCompile);
