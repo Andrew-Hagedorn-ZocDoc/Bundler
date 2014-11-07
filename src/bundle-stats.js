@@ -56,6 +56,7 @@ function BundleStatsCollector(
     this.LessImportRegexStart = new RegExp("@import url\\((\"|')", "i");
     this.LessImportRegexEnd = new RegExp("(\"|')\\)", "gim");
 	this.ImportedFileStatus = { };
+    this.ParsedImports = { };
 	
     this.Console = { log: function () { } };
 }
@@ -189,11 +190,16 @@ BundleStatsCollector.prototype.ParseMustacheForStats = function (bundleName, tex
     );
 };
 
-var parseLessForImports = function (_this, fileName, text) {
+var parseLessForImports = function (_this, fileName, importLoc, getText) {
 
-    return parseAndAddToCollection(
+    var cachedImports = _this.ParsedImports[importLoc];
+    if(cachedImports) {
+        return cachedImports;
+    }
+
+    cachedImports =  parseAndAddToCollection(
         fileName,
-        text,
+        getText(),
         _this.LessImports,
         _this.LessImportRegex,
         function (item) {
@@ -201,6 +207,10 @@ var parseLessForImports = function (_this, fileName, text) {
                        .replace(_this.LessImportRegexEnd, '');
         }
     );
+
+    _this.ParsedImports[importLoc] = cachedImports;
+
+    return cachedImports;
 };
 
 BundleStatsCollector.prototype.SearchForLessImports = function (fileName, text) {
@@ -209,7 +219,7 @@ BundleStatsCollector.prototype.SearchForLessImports = function (fileName, text) 
         originalFile = fileName;
 
     var depth = 0;
-    var parsed = [{ file: fileName, imports: parseLessForImports(_this, originalFile, text) }];
+    var parsed = [{ file: fileName, imports: parseLessForImports(_this, originalFile, originalFile, function() {return text;}) }];
     var importList = [];
 
     //search for nested imports up to 10 levels deep.
@@ -225,10 +235,13 @@ BundleStatsCollector.prototype.SearchForLessImports = function (fileName, text) 
 
                 var dirName = _this.Path.dirname(parsed[j].file);
                 var resolvedImport = _this.Path.resolve(dirName, parsed[j].imports[i]);
-                text = _this.FileSystem.readFileSync(resolvedImport, 'utf8');
 
                 importList.push(resolvedImport);
-                nextLevel.push({ file: resolvedImport, imports: parseLessForImports(_this, originalFile, text) || [] });
+                nextLevel.push({
+                    file: resolvedImport,
+                    imports: parseLessForImports(_this, originalFile, resolvedImport,  function(){
+                        return _this.FileSystem.readFileSync(resolvedImport, 'utf8');
+                    }) || [] });
             }
         }
 
