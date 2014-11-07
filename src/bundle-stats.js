@@ -55,7 +55,8 @@ function BundleStatsCollector(
     this.LessImportRegex = new RegExp("@import url\\((\"|')[^(\"|')]*(\"|')\\)", "g");
     this.LessImportRegexStart = new RegExp("@import url\\((\"|')", "i");
     this.LessImportRegexEnd = new RegExp("(\"|')\\)", "gim");
-
+	this.ImportedFileStatus = { };
+	
     this.Console = { log: function () { } };
 }
 
@@ -240,6 +241,28 @@ BundleStatsCollector.prototype.SearchForLessImports = function (fileName, text) 
         addToCollection(fileName, _this.LessImports, importList[i]);
     }
 };
+
+BundleStatsCollector.prototype.ChangeExistsInImportedFile = function (fileName, lastUpdated) {
+    var _this = this, 
+		imports = this.GetImportsForFile(fileName);
+	
+	for(var i =0 ; i < imports.length; i++) {
+		var importFileName = imports[i];
+		var importStatus = _this.ImportedFileStatus[importFileName];
+		if(importStatus == null) {
+			var importStat = _this.FileSystem.statSync(imports[i]);
+			importStatus = lastUpdated < importStat.mtime.getTime();
+			_this.ImportedFileStatus[importFileName] = importStatus
+		}
+		
+		if(importStatus){
+			return true;
+		}
+	}
+	
+	return false;
+};
+
 
 BundleStatsCollector.prototype.GetImportsForFile = function (fileName) {
     return this.LessImports[fileName] || [];
