@@ -31,9 +31,6 @@ describe("Css Bundling:", function() {
         testCase.RunBundlerAndVerifyOutput();
     };
 
-  it("Folder option will bundle with force bundle option", function () {
-      runTestCase("combines-css-folder-with-forcebundle");
-  });
 
   it("If an output directory is specified, then the minified bundle is put in it.", function () {
       runTestCase("output-directory-css", "/folder-output/");
