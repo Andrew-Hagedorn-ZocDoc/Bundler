@@ -88,7 +88,6 @@ var cleanDirectory = function(fs, dir) {
 			fs.unlinkSync(fullPath);
 		}
 	});
-	
 	fs.rmdirSync(dir);
 }
 

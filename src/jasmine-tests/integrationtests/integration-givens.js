@@ -21,6 +21,7 @@ Givens.prototype.CleanTestSpace = function(testDirBase) {
     this.Utility.CreateDirectory(this.TestDirectory);
     this.BundleOptions = "";
     this.BundleContents = "";
+    this.OutputDirectory = "./" + this.TestDirectory;
 };
 
 Givens.prototype.FileNotInBundle = function (fileName, contents) {
@@ -48,4 +49,10 @@ Givens.prototype.SubDirectory = function (directory) {
 
 Givens.prototype.BundleOption = function (option) {
     this.BundleOptions += " " + option;
+};
+
+Givens.prototype.OutputDirectoryIs = function (directory) {
+    var rootedDir = this.BaseTestDirectory + '/' + directory;
+    this.Utility.CreateDirectory(rootedDir);
+    this.OutputDirectory = "./" + rootedDir;
 };

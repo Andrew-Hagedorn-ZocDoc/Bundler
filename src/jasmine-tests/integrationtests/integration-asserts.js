@@ -1,17 +1,19 @@
 
 function Asserts(
   testUtility,
-  givens
+  givens,
+  suffix
 )
 {
     this.Utility = testUtility;
     this.Givens = givens;
+    this.Suffix = suffix;
 };
 
 exports.Asserts = Asserts;
 
 Asserts.prototype.verifyBundleIs = function(expectedContents) {
-    this.Utility.VerifyFileContents(this.Givens.TestDirectory, "test.min.css", expectedContents);
+    this.Utility.VerifyFileContents(this.Givens.OutputDirectory, "test.min." + this.Suffix, expectedContents);
 };
 
 Asserts.prototype.verifyFileAndContentsAre = function (directory, file, expectedContents) {

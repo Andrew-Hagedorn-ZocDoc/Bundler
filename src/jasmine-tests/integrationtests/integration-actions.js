@@ -1,16 +1,18 @@
 
 function Actions(
   testUtility,
-  givens
+  givens,
+  suffix
 )
 {
     this.Utility = testUtility;
     this.Givens = givens;
+    this.Suffix = suffix;
 };
 
 exports.Actions = Actions;
 
 Actions.prototype.Bundle = function() {
-    this.Utility.CreateFile(this.Givens.TestDirectory, "test.css.bundle", this.Givens.BundleContents);
-    this.Utility.Bundle(this.Givens.TestDirectory, this.Givens.BundleOptions + " -outputbundlestats:true -outputdirectory:./" + this.Givens.TestDirectory);
+    this.Utility.CreateFile(this.Givens.TestDirectory, "test." + this.Suffix + ".bundle", this.Givens.BundleContents);
+    this.Utility.Bundle(this.Givens.TestDirectory, this.Givens.BundleOptions + " -outputbundlestats:true -outputdirectory:" + this.Givens.OutputDirectory);
 };
