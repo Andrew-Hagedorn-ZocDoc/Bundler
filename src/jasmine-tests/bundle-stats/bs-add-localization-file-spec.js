@@ -91,6 +91,18 @@ describe("BundleStatsCollector - ", function() {
         validateBundle(bundle1, [ ]);
     });
 
+    it("Clearing a bundle at the end of a file path removes all LocalizedStrings.", function () {
+
+        stats.ParseMustacheForStats(bundle1, ls1);
+        stats.ParseMustacheForStats(bundle1, ls2);
+
+        validateBundle(bundle1, [string1, string2]);
+
+        stats.ClearStatsForBundle("file/path/" + bundle1);
+
+        validateBundle(bundle1, []);
+    });
+
 
     it("Duplicate LocalizedStrings are not added.", function() {
 
