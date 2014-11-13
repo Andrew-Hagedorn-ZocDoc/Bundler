@@ -30,10 +30,6 @@ describe("Css Bundling:", function() {
 
         testCase.RunBundlerAndVerifyOutput();
     };
- 
-  it("The directory option allows entire subdirectories to be included", function () {
-      runTestCase("directory-source-css");
-  });
 
   it("Folder option will bundle with force bundle option", function () {
       runTestCase("combines-css-folder-with-forcebundle");

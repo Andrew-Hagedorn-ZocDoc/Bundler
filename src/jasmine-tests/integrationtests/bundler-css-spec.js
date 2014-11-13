@@ -158,8 +158,60 @@ describe("Css Bundling:", function() {
                      + '.less1{color:red}\n');
 
 	});
-    
-	var givenFileNotInBundleInSubDirectory = function (subDirectory, file, contents) {
+
+    it("The directory option allows entire subdirectories to be included", function () {
+        givenBundleOption("-directory");
+
+        givenSubDirectory('folder1');
+        givenFileNotInBundleInSubDirectory('folder1', 'file1.css', '.file1 { color: red; }');
+        givenFileNotInBundleInSubDirectory('folder1', 'file2.less', '.less1 { color: green; }');
+
+        givenSubDirectory('folder2');
+        givenFileNotInBundleInSubDirectory('folder2', 'file3.css', '.file2 { color: blue; }');
+
+        givenDirectoryToBundle('folder1');
+
+        bundle();
+
+        verifyBundleIs('.file1{color:red}\n'
+                     + '.less1{color:green}\n');
+    });
+
+    it("The directory option is recursive", function () {
+        givenBundleOption("-directory");
+
+        givenSubDirectory('folder1');
+        givenSubDirectory('folder1/folder2');
+        givenFileNotInBundleInSubDirectory('folder1', 'file1.css', '.file1 { color: red; }');
+        givenFileNotInBundleInSubDirectory('folder1/folder2', 'file2.less', '.less1 { color: green; }');
+
+        givenDirectoryToBundle('folder1');
+
+        bundle();
+
+        verifyBundleIs('.file1{color:red}\n'
+            + '.less1{color:green}\n');
+    });
+
+    it("The directory option can be combined with direct file references", function () {
+        givenBundleOption("-directory");
+
+        givenSubDirectory('folder1');
+        givenFileNotInBundleInSubDirectory('folder1', 'file1.css', '.file1 { color: red; }');
+        givenFileNotInBundleInSubDirectory('folder1', 'file2.less', '.less1 { color: green; }');
+
+        givenDirectoryToBundle('folder1');
+        givenFileToBundle('file3.css', '.file3 { color: orange; }\n');
+
+        bundle();
+
+        verifyBundleIs('.file1{color:red}\n'
+            + '.less1{color:green}\n'
+            + '.file3{color:orange}\n');
+    });
+
+
+    var givenFileNotInBundleInSubDirectory = function (subDirectory, file, contents) {
 	    var fullDir = testDir + "/" + subDirectory;
 	    testUtility.CreateFile(fullDir, file, contents);
 	};
@@ -202,6 +254,10 @@ describe("Css Bundling:", function() {
 	    givenFileNotInBundle(fileName, contents);
 		bundleContents = bundleContents + fileName + "\n";
 	};
+
+    var givenDirectoryToBundle = function(directoryName) {
+        bundleContents = bundleContents + directoryName + "\n";
+    };
 
 	var givenFileNotInBundle = function (fileName, contents) {
 	    testUtility.CreateFile(testDir, fileName, contents);
