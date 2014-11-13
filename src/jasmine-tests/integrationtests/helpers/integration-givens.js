@@ -8,6 +8,7 @@ function Givens(
     this.BundleContents = "";
     this.TestDirectory = "";
     this.BaseTestDirectory = "";
+    this.ImportDirectory = "";
 };
 
 exports.Givens = Givens;
@@ -15,10 +16,12 @@ exports.Givens = Givens;
 Givens.prototype.CleanTestSpace = function(testDirBase) {
 
     this.BaseTestDirectory = testDirBase;
-    this.TestDirectory = testDirBase + '/test'
+    this.TestDirectory = testDirBase + '/test';
+    this.ImportDirectory = testDirBase + '/import';
     this.Utility.CleanDirectory(this.BaseTestDirectory);
     this.Utility.CreateDirectory(this.BaseTestDirectory);
     this.Utility.CreateDirectory(this.TestDirectory);
+    this.Utility.CreateDirectory(this.ImportDirectory);
     this.BundleOptions = "";
     this.BundleContents = "";
     this.OutputDirectory = "./" + this.TestDirectory;
@@ -55,4 +58,25 @@ Givens.prototype.OutputDirectoryIs = function (directory) {
     var rootedDir = this.BaseTestDirectory + '/' + directory;
     this.Utility.CreateDirectory(rootedDir);
     this.OutputDirectory = "./" + rootedDir;
+};
+
+Givens.prototype.ImportFile = function(fileName, contents) {
+    this.Utility.CreateFile(this.ImportDirectory, fileName, contents);
+};
+
+Givens.prototype.ImportFile = function(fileName, contents) {
+    this.Utility.CreateFile(this.ImportDirectory, fileName, contents);
+};
+
+var updateFile = function (_this, dir, fileName, contents) {
+    _this.Utility.Wait(1000);
+    _this.Utility.CreateFile(dir, fileName, contents);
+};
+
+Givens.prototype.UpdatedFile = function(fileName, contents) {
+    updateFile(this, this.TestDirectory, fileName, contents);
+};
+
+Givens.prototype.UpdatedImport = function(fileName, contents) {
+    updateFile(this, this.ImportDirectory, fileName, contents);
 };

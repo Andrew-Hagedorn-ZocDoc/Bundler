@@ -3,22 +3,19 @@ describe("Recompile Tests - ", function() {
 
     var exec = require('child_process').exec,
          fs = require('fs'),
-         testHelper = require('./integration-test-helper.js'),
+         testHelper = require('./helpers/integration-test-helper.js'),
+         givensHelper = require('./helpers/integration-givens.js'),
+         actionsHelper = require('./helpers/integration-actions.js'),
+         assertsHelper = require('./helpers/integration-asserts.js'),
          testUtility = new testHelper.TestUtility(exec, fs, runs, waitsFor),
+         given = new givensHelper.Givens(testUtility),
+         asserts,
+         actions,
          bundle,
-         bundleContents,
-         testDirBase = 'recompile-test-suite',
-         testDir = testDirBase + '/test',
-         importDirectory = testDirBase + '/import',
-         runType;
+         testDirBase = 'recompile-test-suite';
 
     beforeEach(function () {
-
-        bundleContents = "";
-		testUtility.CleanDirectory(testDirBase);
-        testUtility.CreateDirectory(testDirBase);
-        testUtility.CreateDirectory(testDir);
-        testUtility.CreateDirectory(importDirectory);
+        given.CleanTestSpace(testDirBase);
     });
 
     afterEach(function () {
@@ -29,15 +26,16 @@ describe("Recompile Tests - ", function() {
     describe("Javascript: ", function () {
 
         beforeEach(function () {
-            runType = '.js';
+            actions = new actionsHelper.Actions(testUtility, given, 'js');
+            asserts = new assertsHelper.Asserts(testUtility, given, 'js');
 
-            givenFileToBundle("file1.js", "var foo = 'asdf';");
-            givenFileToBundle("file2.js", "var foo2 = 'bnmf';");
-            givenFileToBundle("mustache1.mustache", "<div>{{a}}</div>");
+            given.FileToBundle("file1.js", "var foo = 'asdf';");
+            given.FileToBundle("file2.js", "var foo2 = 'bnmf';");
+            given.FileToBundle("mustache1.mustache", "<div>{{a}}</div>");
 
-            bundle();
+            actions.Bundle();
 
-            verifyBundleIs(';var foo="asdf"\n'
+            asserts.verifyBundleIs(';var foo="asdf"\n'
                          + ';var foo2="bnmf"\n'
                          + ';window.JST=window.JST||{},JST.mustache1=new Hogan.Template({code:function(a,b,c){var d=this;return d.b(c=c||""),d.b("<div>"),d.b(d.v(d.f("a",a,b,0))),d.b("</div>"),d.fl()},partials:{},subs:{}})\n');
 
@@ -45,11 +43,11 @@ describe("Recompile Tests - ", function() {
 
         it("An updated javascript file causes the contents of the bundle to change when re-bundled.", function () {
 
-            givenFileUpdate("file2.js", "var foo2 = 'a new value';");
+            given.UpdatedFile("file2.js", "var foo2 = 'a new value';");
 
-            bundle();
+            actions.Bundle();
 
-            verifyBundleIs(';var foo="asdf"\n'
+            asserts.verifyBundleIs(';var foo="asdf"\n'
                          + ';var foo2="a new value"\n'
                          + ';window.JST=window.JST||{},JST.mustache1=new Hogan.Template({code:function(a,b,c){var d=this;return d.b(c=c||""),d.b("<div>"),d.b(d.v(d.f("a",a,b,0))),d.b("</div>"),d.fl()},partials:{},subs:{}})\n');
 
@@ -57,11 +55,11 @@ describe("Recompile Tests - ", function() {
 
         it("An updated mustache file causes the contents of the bundle to change when re-bundled.", function () {
 
-            givenFileUpdate("mustache1.mustache", "<a>{{b}}</a>");
+            given.UpdatedFile("mustache1.mustache", "<a>{{b}}</a>");
 
-            bundle();
+            actions.Bundle();
 
-            verifyBundleIs(';var foo="asdf"\n'
+            asserts.verifyBundleIs(';var foo="asdf"\n'
                          + ';var foo2="bnmf"\n'
                          + ';window.JST=window.JST||{},JST.mustache1=new Hogan.Template({code:function(a,b,c){var d=this;return d.b(c=c||""),d.b("<a>"),d.b(d.v(d.f("b",a,b,0))),d.b("</a>"),d.fl()},partials:{},subs:{}})\n');
 
@@ -73,19 +71,20 @@ describe("Recompile Tests - ", function() {
     describe("Css: ", function () {
 
         beforeEach(function () {
-            runType = '.css';
+            actions = new actionsHelper.Actions(testUtility, given, 'css');
+            asserts = new assertsHelper.Asserts(testUtility, given, 'css');
 
-            givenImport("import1.less", "@import url('./import2.less');\n @imported1: black;");
-            givenImport("import2.less", "@imported2: black;");
-            givenFileToBundle("file1.css", ".style1 { color: red; }");
-            givenFileToBundle("file2.css", ".style2 { color: blue; }");
-            givenFileToBundle("less1.less", "@theColor: white; .style3 { color: @theColor; }");
-            givenFileToBundle("less2.less", "@import url('../import/import1.less');\n .importColor { color: @imported1; }");
-            givenFileToBundle("less3.less", "@import url('../import/import1.less');\n .deeperImportColor { color: @imported2; }");
+            given.ImportFile("import1.less", "@import url('./import2.less');\n @imported1: black;");
+            given.ImportFile("import2.less", "@imported2: black;");
+            given.FileToBundle("file1.css", ".style1 { color: red; }");
+            given.FileToBundle("file2.css", ".style2 { color: blue; }");
+            given.FileToBundle("less1.less", "@theColor: white; .style3 { color: @theColor; }");
+            given.FileToBundle("less2.less", "@import url('../import/import1.less');\n .importColor { color: @imported1; }");
+            given.FileToBundle("less3.less", "@import url('../import/import1.less');\n .deeperImportColor { color: @imported2; }");
 
-            bundle();
+            actions.Bundle();
 
-            verifyBundleIs('.style1{color:red}\n'
+            asserts.verifyBundleIs('.style1{color:red}\n'
                          + '.style2{color:#00f}\n'
                          + '.style3{color:#fff}\n'
                          + '.importColor{color:#000}\n'
@@ -95,11 +94,11 @@ describe("Recompile Tests - ", function() {
         
         it("An updated css file causes the contents of the bundle to change when re-bundled.", function () {
 
-            givenFileUpdate("file1.css", ".newstyle1 { color: yellow; }");
+            given.UpdatedFile("file1.css", ".newstyle1 { color: yellow; }");
 
-            bundle();
+            actions.Bundle();
 
-            verifyBundleIs('.newstyle1{color:#ff0}\n'
+            asserts.verifyBundleIs('.newstyle1{color:#ff0}\n'
                          + '.style2{color:#00f}\n'
                          + '.style3{color:#fff}\n'
                          + '.importColor{color:#000}\n'
@@ -108,11 +107,11 @@ describe("Recompile Tests - ", function() {
 
         it("An updated less file causes the contents of the bundle to change when re-bundled.", function () {
 
-            givenFileUpdate("less1.less", "@theColor: green; .style4 { color: @theColor; }");
+            given.UpdatedFile("less1.less", "@theColor: green; .style4 { color: @theColor; }");
 
-            bundle();
+            actions.Bundle();
 
-            verifyBundleIs('.style1{color:red}\n'
+            asserts.verifyBundleIs('.style1{color:red}\n'
                          + '.style2{color:#00f}\n'
                          + '.style4{color:green}\n'
                          + '.importColor{color:#000}\n'
@@ -122,11 +121,11 @@ describe("Recompile Tests - ", function() {
         
         it("An updated import of a less file causes the contents of the bundle to change when re-bundled.", function () {
 
-            givenImportUpdate("import1.less", "@import url('./import2.less');\n @imported1: blue;");
+            given.UpdatedImport("import1.less", "@import url('./import2.less');\n @imported1: blue;");
 
-            bundle();
+            actions.Bundle();
 
-            verifyBundleIs('.style1{color:red}\n'
+            asserts.verifyBundleIs('.style1{color:red}\n'
                          + '.style2{color:#00f}\n'
                          + '.style3{color:#fff}\n'
                          + '.importColor{color:#00f}\n'
@@ -136,50 +135,16 @@ describe("Recompile Tests - ", function() {
 
         it("An updated nested import of a less file causes the contents of the bundle to change when re-bundled.", function () {
 
-            givenImportUpdate("import2.less", "@imported2: blue;");
+            given.UpdatedImport("import2.less", "@imported2: blue;");
 
-            bundle();
+            actions.Bundle();
 
-            verifyBundleIs('.style1{color:red}\n'
+            asserts.verifyBundleIs('.style1{color:red}\n'
                          + '.style2{color:#00f}\n'
                          + '.style3{color:#fff}\n'
                          + '.importColor{color:#000}\n'
                          + '.deeperImportColor{color:#00f}\n');
 
         });
-
     });
-
-
-    var givenFileUpdate = function (fileName, contents) {
-        updateFile(testDir, fileName, contents);
-    };
-
-    var updateFile = function (dir, fileName, contents) {
-        testUtility.Wait(1000);
-        testUtility.CreateFile(dir, fileName, contents);
-    };
-
-    var givenImport = function (fileName, contents) {
-        testUtility.CreateFile(importDirectory, fileName, contents);
-    };
-
-    var givenImportUpdate = function (fileName, contents) {
-        updateFile(importDirectory, fileName, contents);
-    };
-
-    var verifyBundleIs = function (expectedContents) {
-        testUtility.VerifyFileContents(testDir, "test.min" + runType, expectedContents);
-    };
-
-    var bundle = function () {
-        testUtility.CreateFile(testDir, "test" + runType + ".bundle", bundleContents);
-        testUtility.Bundle(testDir, " -outputbundlestats:true -outputdirectory:./" + testDir);
-    };
-
-    var givenFileToBundle = function (fileName, contents) {
-        testUtility.CreateFile(testDir, fileName, contents);
-        bundleContents = bundleContents + fileName + "\n";
-    };
-
 });
