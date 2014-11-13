@@ -496,20 +496,29 @@ function getOrCreateJsLiveScript(options, livescriptText, lsPath, jsPath, cb /*c
 function getOrCreateJsMustache(options, mustacheText, mPath, jsPath, cb /*cb(js)*/) {
 
 	compileAsync(options, "compiling", function (mustacheText, mPath, cb) {
-            var templateName = path.basename(mPath, path.extname(mPath)); 
-            if (options.usetemplatedirs){
-                var splitPath = mPath.replace(".mustache", "").split(path.sep);
-                var templateIndex = splitPath.indexOf("templates");
-                templateName = splitPath.slice(templateIndex + 1).join("-");
-            }
-            var templateObject = "{ code: " + hogan.compile(mustacheText, { asString: true })
-                            + ", partials: {}, subs: {} }";
-            var compiledTemplate = "window[\"JST\"] = window[\"JST\"] || {};"
-                        + " JST['"
-                        + templateName
-                        + "'] = new Hogan.Template("+ templateObject + ");";
-            cb(compiledTemplate);
-        }, mustacheText, mPath, jsPath, cb);
+		try {
+			var templateName = path.basename(mPath, path.extname(mPath)); 
+			if (options.usetemplatedirs){
+				var splitPath = mPath.replace(".mustache", "").split(path.sep);
+				var templateIndex = splitPath.indexOf("templates");
+				templateName = splitPath.slice(templateIndex + 1).join("-");
+			}
+			var templateObject = "{ code: " + hogan.compile(mustacheText, { asString: true })
+							+ ", partials: {}, subs: {} }";
+			var compiledTemplate = "window[\"JST\"] = window[\"JST\"] || {};"
+						+ " JST['"
+						+ templateName
+						+ "'] = new Hogan.Template("+ templateObject + ");";
+			cb(compiledTemplate);
+		}
+		catch(err) {
+		throw {
+			Message:  err.message,
+			Stack:  err.stack,
+			FilePath:  mPath
+		};
+		}
+	}, mustacheText, mPath, jsPath, cb);
 }
 
 function getOrCreateMinJs(options, js, jsPath, minJsPath, cb /*cb(minJs)*/) {
