@@ -1,6 +1,6 @@
 var exec = require('child_process').exec,
     fs = require('fs'),
-    bundleImageRewrite = require('../bundle-image-rewrite.js');
+    bundleImageRewrite = require('../../bundle-image-rewrite.js');
 
 describe("BundleImageRewriter - ", function () {
 

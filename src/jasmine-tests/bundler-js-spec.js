@@ -29,11 +29,6 @@ describe("Javascript Bundling: ", function() {
         testCase.RunBundlerAndVerifyOutput();
     };
 
-  it("The directory option allows entire subdirectories to be included", function () {
-      runTestCase("directory-source-js");
-  });
-
-
   it("Listing items within a listed directory preferentially orders them.", function () {
       runTestCase("preferential-ordering-js");
   });
