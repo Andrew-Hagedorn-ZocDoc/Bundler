@@ -29,11 +29,6 @@ describe("Javascript Bundling: ", function() {
         testCase.RunBundlerAndVerifyOutput();
     };
 
-  it("Folder option by default minifies, but does not bundle.", function() {
-      var testCase = getTestCase("default-folder-option");
-      testCase.SetUpCacheFileTest(false);
-      testCase.RunBundlerAndVerifyOutput();
-  });
  
   it("The recursive option on a folder searches sub-directories.", function () {
       runTestCase("recursive-folder-js");
@@ -43,9 +38,6 @@ describe("Javascript Bundling: ", function() {
       runTestCase("directory-source-js");
   });
 
-  it("Folder option will bundle with force bundle option", function () {
-      runTestCase("combines-folder-with-forcebundle");
-  });
 
   it("Listing items within a listed directory preferentially orders them.", function () {
       runTestCase("preferential-ordering-js");

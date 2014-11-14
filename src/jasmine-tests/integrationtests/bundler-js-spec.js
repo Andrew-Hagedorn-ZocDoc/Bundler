@@ -66,4 +66,36 @@ describe("Js Bundling:", function() {
             + ';var file2="file2"\n');
     });
 
+    it("Given folder option, then it minifies all files in the top level folder, but does not concatenate into a bundle."
+        , function () {
+
+            given.BundleOption("-folder");
+
+            given.FileNotInBundle('file1.js', 'var file1 = "file1";');
+            given.FileNotInBundle('file2.js', 'var file2 = "file2";');
+            given.FileNotInBundle('file3.js', 'var file3 = "file3";');
+
+            actions.Bundle();
+
+            asserts.verifyFileAndContentsAre(given.TestDirectory, 'file1.min.js', 'var file1="file1"');
+            asserts.verifyFileAndContentsAre(given.TestDirectory, 'file2.min.js', 'var file2="file2"');
+            asserts.verifyFileAndContentsAre(given.TestDirectory, 'file3.min.js', 'var file3="file3"');
+            asserts.verifyFileDoesNotExist(given.TestDirectory, 'test.min.js');
+    });
+
+    it("Given folder and force bundle option, then it minifies all files in the top level folder and concatenates them into a bundle."
+        , function () {
+
+            given.BundleOption("-folder -forcebundle");
+
+            given.FileNotInBundle('file1.js', 'var file1 = "file1";');
+            given.FileNotInBundle('file2.js', 'var file2 = "file2";');
+            given.FileNotInBundle('file3.js', 'var file3 = "file3";');
+
+            actions.Bundle();
+
+            asserts.verifyBundleIs(';var file1="file1"\n'
+                + ';var file2="file2"\n'
+                + ';var file3="file3"\n');
+    });
 });
