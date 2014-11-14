@@ -23,3 +23,7 @@ Asserts.prototype.verifyFileAndContentsAre = function (directory, file, expected
 Asserts.prototype.verifyFileDoesNotExist = function (directory, file) {
     this.Utility.VerifyFileDoesNotExist(directory, file);
 };
+
+Asserts.prototype.verifyErrorOnBundle = function (errorText) {
+    this.Utility.VerifyErrorIs(errorText);
+};

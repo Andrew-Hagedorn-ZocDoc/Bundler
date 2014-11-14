@@ -36,7 +36,10 @@ TestUtility.prototype.RunCommandSync = function (cmd, execCallback) {
                     _this.Console.log("stdErr: (" + stderr + ")");
                     _this.Error = stderr;
                 }
-                if (error) { _this.Console.log("stdErr: (" + error + ")"); }
+                if (error) {
+                    _this.Error = error;
+                    _this.Console.log("error: (" + error + ")");
+                }
 
                 finishedCommand = true;
                 _this.Console.log('Finished command: ' + cmd);
@@ -142,10 +145,16 @@ TestUtility.prototype.Bundle = function (dir, options) {
     });
 }
 
-TestUtility.prototype.VerifyErrorIs = function (dir, fileName) {
+TestUtility.prototype.VerifyErrorIs = function (errorText) {
     var _this = this;
     _this.runFunc(function () {
-        var hasError = _this.Error.indexOf("missing closing") >= 0;
+
+        var error = _this.Error;
+        if(_this.Error.stack) {
+            error = _this.Error.stack;
+        }
+
+        var hasError = error.indexOf(errorText) >= 0;
         expect(hasError).toBe(true);
     });
 }
