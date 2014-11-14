@@ -98,4 +98,22 @@ describe("Js Bundling:", function() {
                 + ';var file2="file2"\n'
                 + ';var file3="file3"\n');
     });
+
+    it("Given the recursive option, then files in sub-directories are included in the bundle.", function () {
+
+        var subDirectory = "sub_dir";
+        given.BundleOption("-folder:recursive -forcebundle");
+        given.SubDirectory(subDirectory);
+
+        given.FileNotInBundle('file1.js', 'var file1 = "file1";');
+        given.FileNotInBundleInSubDirectory(subDirectory, 'file2.js', 'var file2 = "file2";');
+        given.FileNotInBundleInSubDirectory(subDirectory, 'file3.mustache', '<div> {{c}} </div>');
+
+        actions.Bundle();
+
+        asserts.verifyBundleIs(';var file1="file1"\n'
+            + ';var file2="file2"\n'
+            + ';window.JST=window.JST||{},JST.file3=new Hogan.Template({code:function(a,b,c){var d=this;return d.b(c=c||""),d.b("<div> "),d.b(d.v(d.f("c",a,b,0))),d.b(" </div>"),d.fl()},partials:{},subs:{}})\n');
+
+    });
 });

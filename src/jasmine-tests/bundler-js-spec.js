@@ -29,11 +29,6 @@ describe("Javascript Bundling: ", function() {
         testCase.RunBundlerAndVerifyOutput();
     };
 
- 
-  it("The recursive option on a folder searches sub-directories.", function () {
-      runTestCase("recursive-folder-js");
-  });
-
   it("The directory option allows entire subdirectories to be included", function () {
       runTestCase("directory-source-js");
   });
