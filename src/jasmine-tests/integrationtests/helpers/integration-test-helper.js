@@ -2,7 +2,7 @@
 function TestUtility(
   exec,
   fs,
-  runs, 
+  runs,
   waitsFor,
   logger
 )
@@ -20,7 +20,7 @@ exports.TestUtility = TestUtility;
 TestUtility.prototype.RunCommandSync = function (cmd, execCallback) {
     var _this = this,
         finishedCommand;
-        
+
     _this.Console.log('called run command');
 
     _this.runFunc(function () {
@@ -43,13 +43,13 @@ TestUtility.prototype.RunCommandSync = function (cmd, execCallback) {
 
                 finishedCommand = true;
                 _this.Console.log('Finished command: ' + cmd);
-            });        
+            });
    });
- 
+
     _this.waitFunc(function () {
         return finishedCommand;
-     }, 
-     "Running command did not complete", 
+     },
+     "Running command did not complete",
      10000
   );
 };
@@ -79,9 +79,9 @@ TestUtility.prototype.Wait = function (duration) {
 var cleanDirectory = function(fs, dir) {
 
 	var files = fs.readdirSync(dir);
-	
+
 	files.forEach(function(directoryItem) {
-	
+
 		var fullPath = dir + '/' + directoryItem;
 		var stats = fs.statSync(fullPath);
 		if(stats.isDirectory()) {

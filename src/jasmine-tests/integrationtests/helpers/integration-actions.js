@@ -14,5 +14,5 @@ exports.Actions = Actions;
 
 Actions.prototype.Bundle = function() {
     this.Utility.CreateFile(this.Givens.TestDirectory, "test." + this.Suffix + ".bundle", this.Givens.BundleContents);
-    this.Utility.Bundle(this.Givens.TestDirectory, this.Givens.BundleOptions + " -outputbundlestats:true -outputdirectory:" + this.Givens.OutputDirectory);
+    this.Utility.Bundle(this.Givens.TestDirectory, this.Givens.BundleOptions);
 };

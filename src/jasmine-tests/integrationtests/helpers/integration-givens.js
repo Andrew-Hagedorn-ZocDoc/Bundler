@@ -62,6 +62,8 @@ Givens.prototype.OutputDirectoryIs = function (directory) {
     var rootedDir = this.BaseTestDirectory + '/' + directory;
     this.Utility.CreateDirectory(rootedDir);
     this.OutputDirectory = "./" + rootedDir;
+
+    this.BundleOption("-outputdirectory:" + this.OutputDirectory);
 };
 
 Givens.prototype.ImportFile = function(fileName, contents) {

@@ -21,21 +21,6 @@ describe("Integration Tests for Bundle Stats Collecting - ", function() {
       return test;
     };
 
-    describe("Hashing: ", function() {
-
-          it(" hashes not computed if the option is not specified.", function () {
-              var test = getTestCase("bundle-hashing", "/folder-output/", false);
-              test.SetUpHashTest(false);
-              test.RunBundlerAndVerifyOutput();
-          });
-
-          it("The stats option computes a hash for all bundles and puts it in the output directory.", function () {
-              var test = getTestCase("bundle-hashing", "/folder-output/", true);
-              test.SetUpHashTest(true);
-              test.RunBundlerAndVerifyOutput();
-          });
-    });
-
     describe("Debug Files: ", function() {
 
         it("No debug files are computed if the option is not specified.", function () {
