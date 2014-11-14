@@ -167,4 +167,70 @@ describe("Js Bundling:", function() {
             + ';var file2="file2"\n'
             + ';var file3="file3"\n');
     });
+
+    it("Listing items before a directory preferentially orders them", function () {
+        given.BundleOption("-directory");
+
+        given.SubDirectory('folder1');
+        given.FileNotInBundleInSubDirectory('folder1', 'file1.js', 'var file1 = "file1";');
+        given.FileNotInBundleInSubDirectory('folder1', 'file2.js', 'var file2 = "file2";');
+        given.FileNotInBundleInSubDirectory('folder1', 'file3.js', 'var file3 = "file3";');
+
+        given.ExistingFileToBundle('folder1/file3.js');
+        given.DirectoryToBundle('folder1');
+
+        actions.Bundle();
+
+        asserts.verifyBundleIs(';var file3="file3"\n'
+            + ';var file1="file1"\n'
+            + ';var file2="file2"\n');
+    });
+
+    it("If an output directory is specified, then the minified bundle is put in it.", function () {
+        given.OutputDirectoryIs('output-dir');
+        given.FileToBundle('file1.js', 'var file1 = "file1";');
+        given.FileToBundle('file2.js', 'var file2 = "file2";');
+
+        actions.Bundle();
+
+        asserts.verifyFileDoesNotExist(given.TestDirectory, 'test.min.css');
+        asserts.verifyFileAndContentsAre(
+            testDirBase + '/output-dir',
+            'test.min.js',
+            ';var file1="file1"\n'
+            + ';var file2="file2"\n');
+    });
+
+    it("If an output directory is specified, then any minified files are put in it.", function () {
+        given.OutputDirectoryIs('output-dir');
+        given.FileToBundle('file1.js', 'var file1 = "file1";');
+        given.FileToBundle('file2.mustache', '<div> {{c}} </div>');
+
+        actions.Bundle();
+
+        asserts.verifyFileDoesNotExist(given.TestDirectory, 'file2.min.js');
+        asserts.verifyFileDoesNotExist(given.TestDirectory, 'file1.min.js');
+        asserts.verifyFileAndContentsAre(
+            testDirBase + '/output-dir',
+            'file1.min.js',
+            'var file1="file1"');
+        asserts.verifyFileAndContentsAre(
+            testDirBase + '/output-dir',
+            'file2.min.js',
+            'window.JST=window.JST||{},JST.file2=new Hogan.Template({code:function(a,b,c){var d=this;return d.b(c=c||""),d.b("<div> "),d.b(d.v(d.f("c",a,b,0))),d.b(" </div>"),d.fl()},partials:{},subs:{}})');
+    });
+
+    it("If an output directory is specified, then any computed files are put in it.", function () {
+        given.OutputDirectoryIs('output-dir');
+        given.FileToBundle('file1.js', 'var file1 = "file1";');
+        given.FileToBundle('file2.mustache', '<div> {{c}} </div>');
+
+        actions.Bundle();
+
+        asserts.verifyFileDoesNotExist(given.TestDirectory, 'file2.js');
+        asserts.verifyFileAndContentsAre(
+            testDirBase + '/output-dir',
+            'file2.js',
+            'window["JST"] = window["JST"] || {}; JST[\'file2\'] = new Hogan.Template({ code: function(c,p,i){var _=this;_.b(i=i||"");_.b("<div> ");_.b(_.v(_.f("c",c,p,0)));_.b(" </div>");return _.fl();;}, partials: {}, subs: {} });');
+    });
 });

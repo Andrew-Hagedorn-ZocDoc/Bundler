@@ -1,6 +1,4 @@
-var exec = require('child_process').exec,
-      fs = require('fs'),
-      bundleOptionsRequire = require('../../bundle-options.js');
+var bundleOptionsRequire = require('../../bundle-options.js');
 
 describe("BundlerOptions - ", function() {
 

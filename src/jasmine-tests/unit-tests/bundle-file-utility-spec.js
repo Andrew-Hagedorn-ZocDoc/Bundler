@@ -1,6 +1,4 @@
-var exec = require('child_process').exec,
-    fs = require('fs'),
-    bundleFileUtilityRequire = require('../../bundle-file-utility.js');
+var bundleFileUtilityRequire = require('../../bundle-file-utility.js');
 
 describe("BundleFileUtility - ", function() {
 

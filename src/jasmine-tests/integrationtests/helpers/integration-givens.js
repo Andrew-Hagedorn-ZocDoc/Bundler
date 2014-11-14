@@ -38,6 +38,10 @@ Givens.prototype.FileNotInBundleInSubDirectory = function (subDirectory, file, c
 
 Givens.prototype.FileToBundle = function (fileName, contents) {
     this.FileNotInBundle(fileName, contents);
+    this.ExistingFileToBundle(fileName);
+};
+
+Givens.prototype.ExistingFileToBundle = function (fileName) {
     this.BundleContents = this.BundleContents + fileName + "\n";
 };
 
