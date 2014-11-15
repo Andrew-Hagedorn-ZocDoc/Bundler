@@ -159,12 +159,19 @@ TestUtility.prototype.VerifyErrorIs = function (errorText) {
     });
 }
 
-TestUtility.prototype.VerifyFileDoesNotExist = function (dir, file) {
-    var _this = this;
+var verifyFile = function (_this, dir, file, isThere) {
     _this.runFunc(function () {
         var exists = _this.FileSystem.existsSync(dir + "/" + file);
-        expect(exists).toBe(false);
+        expect(exists).toBe(isThere);
     });
+};
+
+TestUtility.prototype.VerifyFileDoesNotExist = function (dir, file) {
+    verifyFile(this, dir, file, false);
+}
+
+TestUtility.prototype.VerifyFileExists = function (dir, file) {
+    verifyFile(this, dir, file, true);
 }
 
 TestUtility.prototype.ValidateJsonInFile = function (dir, file, validationFunc) {

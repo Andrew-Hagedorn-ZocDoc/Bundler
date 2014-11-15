@@ -9,6 +9,7 @@ function Givens(
     this.TestDirectory = "";
     this.BaseTestDirectory = "";
     this.ImportDirectory = "";
+    this.StagingDirectory = "";
 };
 
 exports.Givens = Givens;
@@ -24,6 +25,7 @@ Givens.prototype.CleanTestSpace = function(testDirBase) {
     this.Utility.CreateDirectory(this.ImportDirectory);
     this.BundleOptions = "";
     this.BundleContents = "";
+    this.StagingDirectory = "";
     this.OutputDirectory = "./" + this.TestDirectory;
 };
 
@@ -64,6 +66,14 @@ Givens.prototype.OutputDirectoryIs = function (directory) {
     this.OutputDirectory = "./" + rootedDir;
 
     this.BundleOption("-outputdirectory:" + this.OutputDirectory);
+};
+
+Givens.prototype.StagingDirectoryIs = function (directory) {
+    var rootedDir = this.BaseTestDirectory + '/' + directory;
+    this.Utility.CreateDirectory(rootedDir);
+    this.StagingDirectory = "./" + rootedDir;
+
+    this.BundleOption("-stagingdirectory:" + this.StagingDirectory);
 };
 
 Givens.prototype.ImportFile = function(fileName, contents) {
