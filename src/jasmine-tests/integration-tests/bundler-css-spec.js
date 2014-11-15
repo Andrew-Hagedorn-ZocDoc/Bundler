@@ -208,56 +208,6 @@ describe("Css Bundling:", function() {
             + '.file3{color:orange}\n');
     });
 
-    it("If an output directory is specified, then the minified bundle is put in it.", function () {
-        given.OutputDirectoryIs('output-dir');
-        given.FileToBundle('file1.css', '.file1 { color: red; }');
-        given.FileToBundle('file2.css', '.file2 { color: green; }');
-
-        actions.Bundle();
-
-        asserts.verifyFileDoesNotExist(given.TestDirectory, 'test.min.css');
-        asserts.verifyFileAndContentsAre(
-            testDirBase + '/output-dir',
-            'test.min.css',
-            ".file1{color:red}\n"
-            + ".file2{color:green}\n");
-    });
-
-    it("If an output directory is specified, then any minified files are put in it.", function () {
-        given.OutputDirectoryIs('output-dir');
-        given.FileToBundle('file1.css', '.file1 { color: red; }');
-        given.FileToBundle('file2.less', '.file2 { color: green; }');
-
-        actions.Bundle();
-
-        asserts.verifyFileDoesNotExist(given.TestDirectory, 'file2.min.css');
-        asserts.verifyFileDoesNotExist(given.TestDirectory, 'file1.min.css');
-        asserts.verifyFileAndContentsAre(
-            testDirBase + '/output-dir',
-            'file1.min.css',
-            ".file1{color:red}");
-        asserts.verifyFileAndContentsAre(
-            testDirBase + '/output-dir',
-            'file2.min.css',
-            ".file2{color:green}");
-    });
-
-    it("If an output directory is specified, then any computed files are put in it.", function () {
-        given.OutputDirectoryIs('output-dir');
-        given.FileToBundle('file1.css', '.file1 { color: red; }');
-        given.FileToBundle('file2.less', '.file2 { color: green; }');
-
-        actions.Bundle();
-
-        asserts.verifyFileDoesNotExist(given.TestDirectory, 'file2.css');
-        asserts.verifyFileAndContentsAre(
-            testDirBase + '/output-dir',
-            'file2.css',
-            ".file2 {\n" +
-            "  color: green;\n" +
-            "}\n");
-    });
-
 	var givenImages = function (imgFile) {
 	    var imgDir = given.TestDirectory + "/img";
 	    testUtility.CreateDirectory(imgDir);
