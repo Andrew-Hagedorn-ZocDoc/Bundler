@@ -13,7 +13,8 @@ describe("Outputting to another directory:", function() {
         testDirBase = 'js-test-suite';
 
 	beforeEach(function () {
-        given.CleanTestSpace(testDirBase);
+	    given.CleanTestSpace(testDirBase);
+	    given.OutputDirectoryIs('output-dir');
     });
 
     afterEach(function () {
@@ -28,7 +29,7 @@ describe("Outputting to another directory:", function() {
         });
 
         it("If an output directory is specified, then the minified bundle is put in it.", function () {
-            given.OutputDirectoryIs('output-dir');
+            
             given.FileToBundle('file1.js', 'var file1 = "file1";');
             given.FileToBundle('file2.js', 'var file2 = "file2";');
 
@@ -43,7 +44,6 @@ describe("Outputting to another directory:", function() {
         });
 
         it("If an output directory is specified, then any minified files are put in it.", function () {
-            given.OutputDirectoryIs('output-dir');
             given.FileToBundle('file1.js', 'var file1 = "file1";');
             given.FileToBundle('file2.mustache', '<div> {{c}} </div>');
 
@@ -62,7 +62,6 @@ describe("Outputting to another directory:", function() {
         });
 
         it("If an output directory is specified, then any computed files are put in it.", function () {
-            given.OutputDirectoryIs('output-dir');
             given.FileToBundle('file1.js', 'var file1 = "file1";');
             given.FileToBundle('file2.mustache', '<div> {{c}} </div>');
 
@@ -84,7 +83,6 @@ describe("Outputting to another directory:", function() {
         });
 
         it("If an output directory is specified, then the minified bundle is put in it.", function () {
-            given.OutputDirectoryIs('output-dir');
             given.FileToBundle('file1.css', '.file1 { color: red; }');
             given.FileToBundle('file2.css', '.file2 { color: green; }');
 
@@ -99,7 +97,6 @@ describe("Outputting to another directory:", function() {
         });
 
         it("If an output directory is specified, then any minified files are put in it.", function () {
-            given.OutputDirectoryIs('output-dir');
             given.FileToBundle('file1.css', '.file1 { color: red; }');
             given.FileToBundle('file2.less', '.file2 { color: green; }');
 
@@ -118,7 +115,6 @@ describe("Outputting to another directory:", function() {
         });
 
         it("If an output directory is specified, then any computed files are put in it.", function () {
-            given.OutputDirectoryIs('output-dir');
             given.FileToBundle('file1.css', '.file1 { color: red; }');
             given.FileToBundle('file2.less', '.file2 { color: green; }');
 

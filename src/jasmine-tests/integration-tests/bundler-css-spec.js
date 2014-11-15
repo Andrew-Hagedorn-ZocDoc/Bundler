@@ -157,57 +157,6 @@ describe("Css Bundling:", function() {
 
 	});
 
-    it("The directory option allows entire subdirectories to be included", function () {
-        given.BundleOption("-directory");
-
-        given.SubDirectory('folder1');
-        given.FileNotInBundleInSubDirectory('folder1', 'file1.css', '.file1 { color: red; }');
-        given.FileNotInBundleInSubDirectory('folder1', 'file2.less', '.less1 { color: green; }');
-
-        given.SubDirectory('folder2');
-        given.FileNotInBundleInSubDirectory('folder2', 'file3.css', '.file2 { color: blue; }');
-
-        given.DirectoryToBundle('folder1');
-
-        actions.Bundle();
-
-        asserts.verifyBundleIs('.file1{color:red}\n'
-                     + '.less1{color:green}\n');
-    });
-
-    it("The directory option is recursive", function () {
-        given.BundleOption("-directory");
-
-        given.SubDirectory('folder1');
-        given.SubDirectory('folder1/folder2');
-        given.FileNotInBundleInSubDirectory('folder1', 'file1.css', '.file1 { color: red; }');
-        given.FileNotInBundleInSubDirectory('folder1/folder2', 'file2.less', '.less1 { color: green; }');
-
-        given.DirectoryToBundle('folder1');
-
-        actions.Bundle();
-
-        asserts.verifyBundleIs('.file1{color:red}\n'
-            + '.less1{color:green}\n');
-    });
-
-    it("The directory option can be combined with direct file references", function () {
-        given.BundleOption("-directory");
-
-        given.SubDirectory('folder1');
-        given.FileNotInBundleInSubDirectory('folder1', 'file1.css', '.file1 { color: red; }');
-        given.FileNotInBundleInSubDirectory('folder1', 'file2.less', '.less1 { color: green; }');
-
-        given.DirectoryToBundle('folder1');
-        given.FileToBundle('file3.css', '.file3 { color: orange; }\n');
-
-        actions.Bundle();
-
-        asserts.verifyBundleIs('.file1{color:red}\n'
-            + '.less1{color:green}\n'
-            + '.file3{color:orange}\n');
-    });
-
 	var givenImages = function (imgFile) {
 	    var imgDir = given.TestDirectory + "/img";
 	    testUtility.CreateDirectory(imgDir);
