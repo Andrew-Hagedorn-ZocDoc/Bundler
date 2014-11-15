@@ -16,6 +16,8 @@ describe("Recompile Tests - ", function() {
 
     beforeEach(function () {
         given.CleanTestSpace(testDirBase);
+        given.OutputDirectoryIs('output-dir');
+        given.BundleOption('-outputbundlestats');
     });
 
     afterEach(function () {

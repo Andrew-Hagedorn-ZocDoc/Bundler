@@ -36,7 +36,6 @@ describe("Integration Tests for Bundle Stats Collecting:", function() {
 
         it("The stats option computes a hash for all bundles and puts it in the output directory.", function () {
 
-
             given.BundleOption('-outputbundlestats');
 
             actions.Bundle();
