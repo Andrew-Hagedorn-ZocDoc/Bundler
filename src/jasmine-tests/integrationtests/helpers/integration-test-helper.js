@@ -166,3 +166,12 @@ TestUtility.prototype.VerifyFileDoesNotExist = function (dir, file) {
         expect(exists).toBe(false);
     });
 }
+
+TestUtility.prototype.ValidateJsonInFile = function (dir, file, validationFunc) {
+    var _this = this;
+    _this.runFunc(function () {
+        var contents = _this.FileSystem.readFileSync(dir + "/" + file, 'utf8');
+        var json = JSON.parse(contents);
+        validationFunc(json);
+    });
+}

@@ -27,3 +27,7 @@ Asserts.prototype.verifyFileDoesNotExist = function (directory, file) {
 Asserts.prototype.verifyErrorOnBundle = function (errorText) {
     this.Utility.VerifyErrorIs(errorText);
 };
+
+Asserts.prototype.verifyJson = function (directory, file, jsonVerificationFunc) {
+    this.Utility.ValidateJsonInFile(directory, file, jsonVerificationFunc);
+};
