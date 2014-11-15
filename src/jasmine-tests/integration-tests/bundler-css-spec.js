@@ -89,73 +89,7 @@ describe("Css Bundling:", function() {
 
 	    asserts.verifyBundleIs(".file1{color:red}.aa{background:url('combined/version__d30407c38e441f3cb94732074bdfd05f__/img/an-image-there.jpg') center no-repeat}.bb{background:url('img/an-image-not-there.jpg') center no-repeat}\n"
                       + ".a{background:url('combined/version__d30407c38e441f3cb94732074bdfd05f__/an-image-there.jpg') center no-repeat}.b{background:url('an-image-not-there.jpg') center no-repeat}\n");
-	});
-
-	it("Given folder option, then it minifies all files in the top level folder, but does not concatenate into a bundle."
-    , function () {
-
-        given.BundleOption("-folder");
-
-        given.FileNotInBundle('file1.css', '.file1 { color: red; }');
-        given.FileNotInBundle('file2.css', '.file2 { color: red; }');
-        given.FileNotInBundle('file3.css', '.file3 { color: red; }');
-
-        actions.Bundle();
-
-        asserts.verifyFileAndContentsAre(given.TestDirectory, 'file1.min.css', '.file1{color:red}');
-        asserts.verifyFileAndContentsAre(given.TestDirectory, 'file2.min.css', '.file2{color:red}');
-        asserts.verifyFileAndContentsAre(given.TestDirectory, 'file3.min.css', '.file3{color:red}');
-        asserts.verifyFileDoesNotExist(given.TestDirectory, 'test.min.css');
-    });
-
-	it("Given folder and force bundle option, then it minifies all files in the top level folder and concatenates them into a bundle."
-    , function () {
-
-        given.BundleOption("-folder -forcebundle");
-
-        given.FileNotInBundle('file1.css', '.file1 { color: red; }');
-        given.FileNotInBundle('file2.css', '.file2 { color: red; }');
-        given.FileNotInBundle('file3.css', '.file3 { color: red; }');
-
-        actions.Bundle();
-
-        asserts.verifyBundleIs('.file1{color:red}\n'
-                     + '.file2{color:red}\n'
-                     + '.file3{color:red}\n');
-    });
-
-	it("Given a sub directory, then by default the sub-directory is not included with the folder option.", function () {
-
-	    var subDirectory = "sub_dir";
-	    given.BundleOption("-folder -forcebundle");
-	    given.SubDirectory(subDirectory);
-
-	    given.FileNotInBundle('file1.css', '.file1 { color: red; }');
-	    given.FileNotInBundleInSubDirectory(subDirectory, 'file2.css', '.file2 { color: red; }');
-	    given.FileNotInBundleInSubDirectory(subDirectory, 'less1.less', '@color: red;\n.less1 { color: @color; }');
-
-	    actions.Bundle();
-
-	    asserts.verifyBundleIs('.file1{color:red}\n');
-	});
-
-	it("Given the recursive option, then files in sub-directories are included in the bundle.", function () {
-	    
-	    var subDirectory = "sub_dir";
-	    given.BundleOption("-folder:recursive -forcebundle");
-	    given.SubDirectory(subDirectory);
-
-	    given.FileNotInBundle('file1.css', '.file1 { color: red; }');
-	    given.FileNotInBundleInSubDirectory(subDirectory, 'file2.css', '.file2 { color: red; }');
-	    given.FileNotInBundleInSubDirectory(subDirectory, 'less1.less', '@color: red;\n.less1 { color: @color; }');
-
-	    actions.Bundle();
-
-	    asserts.verifyBundleIs('.file1{color:red}\n'
-                     + '.file2{color:red}\n'
-                     + '.less1{color:red}\n');
-
-	});
+	})
 
 	var givenImages = function (imgFile) {
 	    var imgDir = given.TestDirectory + "/img";

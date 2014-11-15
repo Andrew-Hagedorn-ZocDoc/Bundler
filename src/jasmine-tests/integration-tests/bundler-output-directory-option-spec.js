@@ -10,7 +10,7 @@ describe("Outputting to another directory:", function() {
         testUtility = new testHelper.TestUtility(exec, fs, runs, waitsFor),
         given = new givensHelper.Givens(testUtility),
         actions, asserts,
-        testDirBase = 'js-test-suite';
+        testDirBase = 'output-dir-option-test-suite';
 
 	beforeEach(function () {
 	    given.CleanTestSpace(testDirBase);

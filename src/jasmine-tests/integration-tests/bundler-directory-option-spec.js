@@ -1,5 +1,5 @@
 
-describe("Outputting to another directory:", function() {
+describe("Directory Option:", function() {
 
     var exec = require('child_process').exec,
 		fs = require('fs'),
@@ -10,7 +10,7 @@ describe("Outputting to another directory:", function() {
         testUtility = new testHelper.TestUtility(exec, fs, runs, waitsFor),
         given = new givensHelper.Givens(testUtility),
         actions, asserts,
-        testDirBase = 'js-test-suite';
+        testDirBase = 'directory-option-test-suite';
 
 	beforeEach(function () {
 	    given.CleanTestSpace(testDirBase);
