@@ -156,12 +156,12 @@ BundleFiles.prototype.getFilesInDirectory = function (fileType, bundleDir, curre
 
     files.forEach(function (name) {
 
-        if(!matcher(name)) {
- 			return;
- 		}
- 	
+		if(!matcher(name)) {
+			return;
+		}
+	
         var fileName = currentDir + '/' + name.substring(bundleDir.length + 1);
- 		output.push(fileName);
+		output.push(fileName);
     });
 
 	if (output.length == 0) { throw new Error("No files found for directory: " + bundleDir) };
