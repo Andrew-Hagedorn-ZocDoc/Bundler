@@ -1,6 +1,6 @@
 # Bundler
 
-Bundler is a fast, cross-platform, command-line runner (easily integrated into existing IDEs, inc VS.NET) with optimized support for ASP.NET MVC and ServiceStack that statically **compiles**, **minifies** and **combines** your websites **less**, **sass**, **stylus**, **css**, **coffeescript**, **livescript** and **js** files.
+Bundler is a fast, cross-platform, command-line runner (easily integrated into existing IDEs, inc VS.NET) with optimized support for ASP.NET MVC and ServiceStack that statically **compiles**, **minifies** and **combines** your websites **less**, **stylus**, **css**, **coffeescript**, **livescript** and **js** files.
 
 Bundler uses the popular and well-tested javascript libraries in [node's package manager](http://npmjs.org/) for all minification and compilation. This enables it to generate faster and more up-to-date outputs than any other .NET wrapper solution which either uses old .NET ports of node.js or ruby implementations, or they have to invoke external out-of-process [IronRuby](http://www.ironruby.net/) and  JavaScript processes resulting in slower execution - consuming valuable iteration-time on each dev-cycle.
 
@@ -35,7 +35,7 @@ Includes [Twitter Bootstrap](http://twitter.github.com/bootstrap/) + [Backbone.j
 
 ### v1.16 Release Notes
 
-Bundler has added support for [LiveScript](http://livescript.net/) and [Stylus](http://learnboost.github.io/stylus/) thanks to [@legomind](https://github.com/legomind). 
+Bundler has added support for [LiveScript](http://livescript.net/) and [Stylus](http://learnboost.github.io/stylus/) thanks to [@legomind](https://github.com/legomind).
 
 LiveScript is a terse, functionally-inspired language with CoffeeScript roots popular with functional programmers who want to target JS. Whilst Stylus is another creation from JavaScript's code hero [@tjholowaychuk](https://twitter.com/tjholowaychuk), with his take on a terse white-space significant DSL for CSS.
 
@@ -226,5 +226,3 @@ A big thanks to all of Bundler's contributors:
  - [garjitech](https://github.com/garjitech) (Garrett Wolf)
  - [isochronous](https://github.com/isochronous) (Jeremy McLeod)
  - [legomind](https://github.com/legomind)
-
-

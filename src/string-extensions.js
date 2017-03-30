@@ -54,6 +54,6 @@ String.prototype.isJs = function () {
 
 String.prototype.isCss = function () {
     if (this.endsWith('.min.css')) return false;
-    if (this.endsWithAny(['.css', '.less', '.sass', '.scss', '.styl'])) return true;
+    if (this.endsWithAny(['.css', '.less', '.styl'])) return true;
     return false;
 }

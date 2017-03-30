@@ -165,7 +165,7 @@ function scanDir(allFiles, cb) {
                     if(options.directory !== undefined) {
                         var tmpFiles = collection.createBundleFiles(jsBundle);
 
-                        jsFiles.forEach(function(name) { 
+                        jsFiles.forEach(function(name) {
 
                             if(name.startsWith('#')) { return; }
 
@@ -220,7 +220,7 @@ function scanDir(allFiles, cb) {
                     if(options.directory !== undefined) {
                         var tmpFiles = collection.createBundleFiles(cssBundle);
 
-                        cssFiles.forEach(function(name) { 
+                        cssFiles.forEach(function(name) {
 
                             if(name.startsWith('#')) { return; }
 
@@ -275,7 +275,7 @@ function processJsBundle(options, jsBundle, bundleDir, jsFiles, bundleName, cb) 
 
         var afterBundle = options.skipmin ? cb : function (_) {
             var minFileName = bundleFileUtility.getMinFileName(bundleName, bundleName, options);
-			
+
             if(options.outputbundlestats) {
                 bundleStatsCollector.AddFileHash(bundleName, allMinJs);
             }
@@ -316,7 +316,7 @@ function processJsBundle(options, jsBundle, bundleDir, jsFiles, bundleName, cb) 
               jsPath = path.join(bundleDir, jsFile),
               jsPathOutput = bundleFileUtility.getOutputFilePath(bundleName, jsPath, options),
               minJsPath = bundleFileUtility.getMinFileName(bundleName, jsPathOutput,  options);
-        
+
         var i = index++;
         pending++;
         Step(
@@ -452,12 +452,7 @@ function processCssBundle(options, cssBundle, bundleDir, cssFiles, bundleName, c
         processedFiles[file] = true;
 
         var isLess = file.endsWith(".less");
-        var isSass = (file.endsWith(".sass") || file.endsWith(".scss"));
-        var cssFile = isLess ?
-            file.replace(".less", ".css")
-            : isSass ?
-            file.replace(".sass", ".css").replace(".scss", ".css") :
-            file;
+        var cssFile = isLess ? file.replace(".less", ".css") : file;
 
         var filePath = path.join(bundleDir, file),
             cssPath = path.join(bundleDir, cssFile),
@@ -479,11 +474,6 @@ function processCssBundle(options, cssBundle, bundleDir, cssFiles, bundleName, c
 
                         cssPath = cssPathOutput;
                         compile.less(compileOptions).then(next).catch(handleError);
-
-                    } else if (isSass) {
-
-                        cssPath = cssPathOutput;
-                        compile.sass(compileOptions).then(next).catch(handleError);
 
                     } else {
 
