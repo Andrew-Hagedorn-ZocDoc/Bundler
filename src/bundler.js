@@ -259,7 +259,7 @@ function scanDir(allFiles, cb) {
 function processJsBundle(options, jsBundle, bundleDir, jsFiles, bundleName, cb) {
 
     var processedFiles = {};
-
+    
     var allJsArr = [], allMinJsArr = [], index = 0, pending = 0;
     var whenDone = function () {
         if (options.nobundle) {
@@ -275,12 +275,22 @@ function processJsBundle(options, jsBundle, bundleDir, jsFiles, bundleName, cb) 
 
         var afterBundle = options.skipmin ? cb : function (_) {
             var minFileName = bundleFileUtility.getMinFileName(bundleName, bundleName, options);
+            var hash = '';
+            var fileNameWithHash;
 
             if(options.outputbundlestats) {
-                bundleStatsCollector.AddFileHash(bundleName, allMinJs);
+                hash = bundleStatsCollector.AddFileHash(bundleName, allMinJs);
+                hash = '__' + hash + '__';
+                fileNameWithHash = minFileName.replace('.min.', hash + '.min.')
             }
 
-            fs.writeFile(minFileName, allMinJs, cb);
+            if (fileNameWithHash) {
+                fs.writeFile(fileNameWithHash, allMinJs, function() {
+                  fs.writeFile(minFileName, allMinJs, cb);
+                });
+            } else {
+                fs.writeFile(minFileName, allMinJs, cb);
+            }
         };
         if (!options.bundleminonly) {
             fs.writeFile(bundleName, allJs, afterBundle);

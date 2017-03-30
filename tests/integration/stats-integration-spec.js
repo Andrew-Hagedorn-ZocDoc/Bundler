@@ -25,7 +25,6 @@ test.describeIntegrationTest("Integration Tests for Bundle Stats Collecting:", f
 
             test.actions.Bundle();
 
-
             test.assert.verifyJson(
                 test.given.OutputDirectory,
                 'bundle-hashes.json',
@@ -36,6 +35,24 @@ test.describeIntegrationTest("Integration Tests for Bundle Stats Collecting:", f
                     expect(properties[0]).toBe('test.js');
                     expect(json['test.js']).toBe("858a41fa69ad8e61542c1e506b1b107d");
                 });
+        });
+
+        it("The stats option outputs the minified file and the minified file with a hash in it", function () {
+
+            test.given.BundleOption('-outputbundlestats');
+
+            test.actions.Bundle();
+
+            test.assert.verifyFileExists(test.given.OutputDirectory, 'test.min.js');
+            test.assert.verifyFileExists(test.given.OutputDirectory, 'test__858a41fa69ad8e61542c1e506b1b107d__.min.js');
+        });
+
+        it("minified file with hash not ouptut if stats option not given", function () {
+
+            test.actions.Bundle();
+
+            test.assert.verifyFileExists(test.given.OutputDirectory, 'test.min.js');
+            test.assert.verifyFileDoesNotExist(test.given.OutputDirectory, 'test__858a41fa69ad8e61542c1e506b1b107d__.min.js');
         });
     });
 
@@ -84,7 +101,7 @@ test.describeIntegrationTest("Integration Tests for Bundle Stats Collecting:", f
 
             test.actions.Bundle();
 
-            test.assert.verifyJson(
+            test.assert.verifyFileExists(
                 test.given.OutputDirectory,
                 'bundle-localization-strings.json',
                 function (json) {
